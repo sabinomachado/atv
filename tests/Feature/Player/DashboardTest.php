@@ -20,6 +20,19 @@ test('dashboard only shows the logged-in players pending matches', function () {
         ->assertDontSee($otherMatch->player1->name);
 });
 
+test('date options start today and span the next 14 days', function () {
+    $player = Player::factory()->create();
+    TournamentMatch::factory()->create(['player1_id' => $player->id]);
+
+    session(['player_id' => $player->id]);
+
+    $options = Livewire::test(PlayerDashboard::class)->instance()->dateOptions();
+
+    expect($options)->toHaveCount(14)
+        ->and($options[0]['value'])->toBe(now()->toDateString())
+        ->and($options[13]['value'])->toBe(now()->addDays(13)->toDateString());
+});
+
 test('selecting a court and date shows available slots', function () {
     $player = Player::factory()->create();
     $match = TournamentMatch::factory()->create(['player1_id' => $player->id]);
@@ -30,7 +43,7 @@ test('selecting a court and date shows available slots', function () {
     Livewire::test(PlayerDashboard::class)
         ->call('openScheduler', $match->id)
         ->set('courtId', $court->id)
-        ->set('date', now()->addDay()->toDateString())
+        ->call('selectDate', now()->addDay()->toDateString())
         ->assertSet('availableSlots', fn (array $slots) => count($slots) > 0);
 });
 
@@ -48,7 +61,7 @@ test('confirming a slot schedules the match', function () {
     Livewire::test(PlayerDashboard::class)
         ->call('openScheduler', $match->id)
         ->set('courtId', $court->id)
-        ->set('date', $date)
+        ->call('selectDate', $date)
         ->call('confirmSlot', $iso);
 
     $match->refresh();
@@ -74,7 +87,7 @@ test('confirming a slot that is no longer available is rejected', function () {
     Livewire::test(PlayerDashboard::class)
         ->call('openScheduler', $match->id)
         ->set('courtId', $court->id)
-        ->set('date', $conflictingTime->toDateString())
+        ->call('selectDate', $conflictingTime->toDateString())
         ->call('confirmSlot', $conflictingTime->toIso8601String())
         ->assertHasErrors('slot');
 

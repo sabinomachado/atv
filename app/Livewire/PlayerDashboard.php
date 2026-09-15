@@ -59,6 +59,35 @@ class PlayerDashboard extends Component
         return Court::active()->orderBy('name')->get();
     }
 
+    /**
+     * The next two weeks, rendered as tappable day chips instead of a native
+     * date input (friendlier on mobile, and consistent across browsers).
+     *
+     * @return array<int, array{value: string, weekday: string, day: string, month: string}>
+     */
+    #[Computed]
+    public function dateOptions(): array
+    {
+        return collect(range(0, 13))
+            ->map(function (int $daysFromNow) {
+                $date = now()->addDays($daysFromNow);
+
+                return [
+                    'value' => $date->toDateString(),
+                    'weekday' => $date->translatedFormat('D'),
+                    'day' => $date->format('d'),
+                    'month' => $date->translatedFormat('M'),
+                ];
+            })
+            ->all();
+    }
+
+    public function selectDate(string $date): void
+    {
+        $this->date = $date;
+        $this->refreshSlots();
+    }
+
     public function openScheduler(int $matchId): void
     {
         $this->authorizePendingMatch($matchId);
@@ -76,11 +105,6 @@ class PlayerDashboard extends Component
     }
 
     public function updatedCourtId(): void
-    {
-        $this->refreshSlots();
-    }
-
-    public function updatedDate(): void
     {
         $this->refreshSlots();
     }

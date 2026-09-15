@@ -25,15 +25,15 @@
     @livewireStyles
 </head>
 <body class="bg-brand-cream text-slate-900 min-h-screen flex flex-col">
-    <header class="bg-brand-cream text-brand-navy border-b-2 border-brand-lime">
-        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-            <a href="{{ route('public.schedule') }}" class="flex items-center gap-3">
-                <img src="{{ asset('images/logo-mark.png') }}" alt="ATV" class="h-11 w-auto">
+    <header class="bg-brand-cream text-brand-navy border-b-2 border-brand-lime sticky top-0 z-10">
+        <div class="max-w-5xl mx-auto px-4 py-2.5 sm:py-3 flex items-center justify-between gap-3">
+            <a href="{{ route('public.schedule') }}" class="flex items-center gap-3 min-w-0">
+                <img src="{{ asset('images/logo-mark.png') }}" alt="ATV" class="h-9 sm:h-11 w-auto shrink-0">
                 <span class="font-bold leading-tight hidden sm:block">
                     Associação dos<br>Tenistas de Valença
                 </span>
             </a>
-            <nav class="text-sm flex items-center gap-4">
+            <nav class="text-sm flex items-center gap-3 sm:gap-4 shrink-0">
                 <a href="{{ route('public.schedule') }}" class="hover:text-brand-orange">Calendário</a>
                 @if (session('player_id'))
                     <a href="{{ route('player.dashboard') }}" class="hover:text-brand-orange">Meus jogos</a>
@@ -48,7 +48,7 @@
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto w-full px-4 py-8 flex-1">
+    <main class="max-w-5xl mx-auto w-full px-4 py-5 sm:py-8 flex-1">
         {{ $slot }}
     </main>
 
