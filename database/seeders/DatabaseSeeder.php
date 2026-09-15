@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             CourtSeeder::class,
             CategorySeeder::class,
             PlayerSeeder::class,
+            TournamentMatchSeeder::class,
         ]);
     }
 }
