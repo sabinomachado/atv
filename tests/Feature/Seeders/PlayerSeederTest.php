@@ -32,7 +32,8 @@ test('running the seeder twice does not duplicate players or category attachment
 test('seeds the known phone numbers', function () {
     $this->seed(PlayerSeeder::class);
 
-    expect(Player::where('name', 'Matheus Aguiar')->firstOrFail()->phone)->toBe('24999919204')
+    expect(Player::where('name', 'Sabino')->firstOrFail()->phone)->toBe('24992471465')
+        ->and(Player::where('name', 'Matheus Aguiar')->firstOrFail()->phone)->toBe('24999919204')
         ->and(Player::where('name', 'Raphael')->firstOrFail()->phone)->toBe('24988052308')
         ->and(Player::where('name', 'Eduardo Villares')->firstOrFail()->phone)->toBe('24992632440');
 });
