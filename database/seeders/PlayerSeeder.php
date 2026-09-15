@@ -38,7 +38,7 @@ class PlayerSeeder extends Seeder
      * Raphael's nickname — the bracket lists him as "Raphael").
      */
     private const PHONES = [
-        'Matheus Aguiar' => '24 99991-9204',
+        'Matheus Aguiar' => '24999919204',
         'Raphael' => '24 98805-2308',
         'Eduardo Villares' => '24 99263-2440',
     ];
