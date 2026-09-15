@@ -14,7 +14,7 @@ class PlayerSeeder extends Seeder
     private const CATEGORY_B_PLAYERS = [
         'Raphael', 'Theo Figueiredo',
         'Leo Terra', 'Gabriel Correia',
-        'Sabino', 'Bernardo Porto',
+        'Sabino Machado', 'Bernardo Porto',
         'Euler', 'Caio Oliveira',
         'Felipe Maia', 'Anderson Gomes',
         'Flavio Maia', 'Ricardo Jorge',
@@ -35,10 +35,12 @@ class PlayerSeeder extends Seeder
 
     /**
      * Known phone numbers, keyed by the exact name above ("Raphinha" is
-     * Raphael's nickname — the bracket lists him as "Raphael").
+     * Raphael's nickname — the bracket lists him as "Raphael"; the bracket's
+     * "Sabino" is Sabino Machado, matched by full name to avoid creating a
+     * duplicate of his real registration).
      */
     private const PHONES = [
-        'Sabino' => '24992471465',
+        'Sabino Machado' => '24992471465',
         'Matheus Aguiar' => '24999919204',
         'Raphael' => '24 98805-2308',
         'Eduardo Villares' => '24 99263-2440',

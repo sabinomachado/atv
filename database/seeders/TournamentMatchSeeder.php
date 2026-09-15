@@ -17,7 +17,7 @@ class TournamentMatchSeeder extends Seeder
     private const CATEGORY_B_PAIRINGS = [
         ['Raphael', 'Theo Figueiredo'],
         ['Leo Terra', 'Gabriel Correia'],
-        ['Sabino', 'Bernardo Porto'],
+        ['Sabino Machado', 'Bernardo Porto'],
         ['Euler', 'Caio Oliveira'],
         ['Felipe Maia', 'Anderson Gomes'],
         ['Flavio Maia', 'Ricardo Jorge'],

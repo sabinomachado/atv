@@ -11,7 +11,7 @@ test('seeds the preliminary round players into category B', function () {
 
     $categoryB = Category::where('name', 'B')->firstOrFail();
 
-    expect(Player::where('name', 'Sabino')->firstOrFail()->categories->pluck('id'))
+    expect(Player::where('name', 'Sabino Machado')->firstOrFail()->categories->pluck('id'))
         ->toEqual(collect([$categoryB->id]));
 
     expect(Player::whereHas('categories', fn ($query) => $query->where('categories.id', $categoryB->id))->count())
@@ -24,7 +24,7 @@ test('running the seeder twice does not duplicate players or category attachment
 
     expect(Player::count())->toBe(37);
 
-    $sabino = Player::where('name', 'Sabino')->firstOrFail();
+    $sabino = Player::where('name', 'Sabino Machado')->firstOrFail();
 
     expect($sabino->categories()->count())->toBe(1);
 });
@@ -32,7 +32,7 @@ test('running the seeder twice does not duplicate players or category attachment
 test('seeds the known phone numbers', function () {
     $this->seed(PlayerSeeder::class);
 
-    expect(Player::where('name', 'Sabino')->firstOrFail()->phone)->toBe('24992471465')
+    expect(Player::where('name', 'Sabino Machado')->firstOrFail()->phone)->toBe('24992471465')
         ->and(Player::where('name', 'Matheus Aguiar')->firstOrFail()->phone)->toBe('24999919204')
         ->and(Player::where('name', 'Raphael')->firstOrFail()->phone)->toBe('24988052308')
         ->and(Player::where('name', 'Eduardo Villares')->firstOrFail()->phone)->toBe('24992632440');

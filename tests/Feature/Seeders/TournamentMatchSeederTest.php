@@ -18,7 +18,7 @@ test('seeds the 18 preliminary round pairings as pending matches', function () {
         ->and(TournamentMatch::where('status', TournamentMatch::STATUS_PENDING)->count())->toBe(18)
         ->and(TournamentMatch::whereNull('scheduled_at')->count())->toBe(18);
 
-    $sabino = Player::where('name', 'Sabino')->firstOrFail();
+    $sabino = Player::where('name', 'Sabino Machado')->firstOrFail();
 
     expect(TournamentMatch::forPlayer($sabino->id)->exists())->toBeTrue();
 });
