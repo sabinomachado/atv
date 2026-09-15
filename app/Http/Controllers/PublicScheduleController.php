@@ -15,9 +15,16 @@ class PublicScheduleController extends Controller
         $courts = Court::active()->orderBy('name')->get();
         $categories = Category::orderBy('name')->get();
 
+        $statusFilter = $request->string('status')->value();
+        $validStatuses = [TournamentMatch::STATUS_SCHEDULED, TournamentMatch::STATUS_COMPLETED];
+
         $matches = TournamentMatch::query()
             ->whereNotNull('scheduled_at')
-            ->whereIn('status', [TournamentMatch::STATUS_SCHEDULED, TournamentMatch::STATUS_COMPLETED])
+            ->when(
+                in_array($statusFilter, $validStatuses, true),
+                fn ($query) => $query->where('status', $statusFilter),
+                fn ($query) => $query->whereIn('status', $validStatuses),
+            )
             ->when($request->filled('court_id'), fn ($query) => $query->where('court_id', $request->integer('court_id')))
             ->when($request->filled('category_id'), fn ($query) => $query->where('category_id', $request->integer('category_id')))
             ->with(['category', 'player1', 'player2', 'court'])

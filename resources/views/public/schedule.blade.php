@@ -32,7 +32,15 @@
                     @endforeach
                 </select>
             </div>
-            @if (request()->filled('court_id') || request()->filled('category_id'))
+            <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Status</label>
+                <select name="status" onchange="this.form.submit()" class="rounded border-slate-300 text-sm focus:border-brand-orange focus:ring-brand-orange">
+                    <option value="">Todos</option>
+                    <option value="scheduled" @selected(request('status') === 'scheduled')>Agendados</option>
+                    <option value="completed" @selected(request('status') === 'completed')>Realizados</option>
+                </select>
+            </div>
+            @if (request()->filled('court_id') || request()->filled('category_id') || request()->filled('status'))
                 <a href="{{ route('public.schedule') }}" class="text-sm text-slate-500 hover:underline pb-1">Limpar filtros</a>
             @endif
         </form>
@@ -60,10 +68,9 @@
                                         </p>
                                     </div>
                                     <div class="text-sm text-slate-600 text-right">
+                                        <p>{{ $match->scheduled_at->format('H:i') }}</p>
                                         @if ($match->formattedScore())
                                             <p class="font-semibold text-brand-navy">{{ $match->formattedScore() }}</p>
-                                        @else
-                                            <p>{{ $match->scheduled_at->format('H:i') }}</p>
                                         @endif
                                         <p>{{ $match->court->name }}</p>
                                     </div>

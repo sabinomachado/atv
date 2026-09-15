@@ -25,17 +25,46 @@ test('pending matches without a scheduled time are not shown', function () {
         ->assertDontSee($pending->player1->name);
 });
 
-test('completed matches show the final score', function () {
+test('completed matches show the final score and the time it was played', function () {
     $court = Court::factory()->create();
     $match = TournamentMatch::factory()->completed()->create([
         'court_id' => $court->id,
-        'scheduled_at' => now()->subDay(),
+        'scheduled_at' => now()->subDay()->setTime(9, 30),
     ]);
     $match->update(['winner_player_id' => $match->player1_id]);
 
     $this->get('/')
         ->assertOk()
-        ->assertSee('6-3, 6-4');
+        ->assertSee('6-3, 6-4')
+        ->assertSee('09:30');
+});
+
+test('the schedule can be filtered by status', function () {
+    $court = Court::factory()->create();
+
+    $scheduledMatch = TournamentMatch::factory()->scheduled()->create([
+        'court_id' => $court->id,
+        'scheduled_at' => now()->addDay(),
+    ]);
+    $completedMatch = TournamentMatch::factory()->completed()->create([
+        'court_id' => $court->id,
+        'scheduled_at' => now()->subDay(),
+    ]);
+
+    $this->get('/?status=scheduled')
+        ->assertOk()
+        ->assertSee($scheduledMatch->player1->name)
+        ->assertDontSee($completedMatch->player1->name);
+
+    $this->get('/?status=completed')
+        ->assertOk()
+        ->assertSee($completedMatch->player1->name)
+        ->assertDontSee($scheduledMatch->player1->name);
+
+    $this->get('/')
+        ->assertOk()
+        ->assertSee($scheduledMatch->player1->name)
+        ->assertSee($completedMatch->player1->name);
 });
 
 test('the schedule can be filtered by court', function () {
