@@ -59,19 +59,19 @@
                                 <div class="bg-white rounded-lg shadow p-4">
                                     <div class="flex items-center justify-between gap-2 mb-1.5">
                                         <span class="inline-block text-xs font-semibold uppercase bg-brand-navy text-white rounded px-2 py-0.5">
-                                            {{ $match->category->name }}
+                                            {{ $match->category?->name ?? '—' }}
                                         </span>
                                         <span class="text-sm font-semibold text-brand-navy shrink-0">
                                             {{ $match->scheduled_at->format('H:i') }}
                                         </span>
                                     </div>
                                     <p class="font-medium">
-                                        <span class="{{ $match->winner_player_id === $match->player1_id ? 'font-bold text-brand-green' : '' }}">{{ $match->player1->name }}</span>
+                                        <span class="{{ $match->winner_player_id === $match->player1_id ? 'font-bold text-brand-green' : '' }}">{{ $match->player1?->name ?? 'Jogador removido' }}</span>
                                         x
-                                        <span class="{{ $match->winner_player_id === $match->player2_id ? 'font-bold text-brand-green' : '' }}">{{ $match->player2->name }}</span>
+                                        <span class="{{ $match->winner_player_id === $match->player2_id ? 'font-bold text-brand-green' : '' }}">{{ $match->player2?->name ?? 'Jogador removido' }}</span>
                                     </p>
                                     <div class="flex items-center justify-between gap-2 text-sm text-slate-600">
-                                        <span>{{ $match->court->name }}</span>
+                                        <span>{{ $match->court?->name ?? 'Quadra a definir' }}</span>
                                         @if ($match->formattedScore())
                                             <span class="font-semibold text-brand-navy">{{ $match->formattedScore() }}</span>
                                         @endif

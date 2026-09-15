@@ -29,6 +29,16 @@ class TournamentMatchResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Confrontos';
 
+    /**
+     * A match can't be "agendado"/"concluído" without a court and a
+     * date/time — otherwise it renders as a broken null reference wherever
+     * the schedule is displayed.
+     */
+    private const STATUSES_REQUIRING_SCHEDULE = [
+        TournamentMatch::STATUS_SCHEDULED,
+        TournamentMatch::STATUS_COMPLETED,
+    ];
+
     public static function form(Form $form): Form
     {
         return $form
@@ -64,6 +74,7 @@ class TournamentMatchResource extends Resource
                                 TournamentMatch::STATUS_CANCELLED => 'Cancelado',
                             ])
                             ->required()
+                            ->live()
                             ->default(TournamentMatch::STATUS_PENDING),
                     ])
                     ->columns(2),
@@ -75,12 +86,14 @@ class TournamentMatchResource extends Resource
                             ->relationship('court', 'name')
                             ->live()
                             ->searchable()
-                            ->preload(),
+                            ->preload()
+                            ->required(fn (Get $get) => in_array($get('status'), self::STATUSES_REQUIRING_SCHEDULE, true)),
                         Forms\Components\DateTimePicker::make('scheduled_at')
                             ->label('Data e hora')
                             ->native(false)
                             ->seconds(false)
                             ->live()
+                            ->required(fn (Get $get) => in_array($get('status'), self::STATUSES_REQUIRING_SCHEDULE, true))
                             ->rules([
                                 fn (Get $get, ?Model $record): Closure => function (string $attribute, $value, Closure $fail) use ($get, $record) {
                                     if (blank($value) || blank($get('court_id')) || $get('override_availability')) {

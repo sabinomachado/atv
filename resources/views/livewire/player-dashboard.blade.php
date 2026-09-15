@@ -23,7 +23,7 @@
                         <div class="flex items-start justify-between gap-3">
                             <div class="min-w-0">
                                 <span class="inline-block text-xs font-semibold uppercase bg-brand-navy text-white rounded px-2 py-0.5 mb-1">
-                                    {{ $match->category->name }}
+                                    {{ $match->category?->name ?? '—' }}
                                 </span>
                                 <p class="font-medium truncate">
                                     vs {{ $opponent?->name ?? 'A definir' }}
@@ -120,14 +120,14 @@
                     <div class="bg-white rounded-lg shadow p-4">
                         <div class="flex items-center justify-between gap-2 mb-1">
                             <span class="inline-block text-xs font-semibold uppercase bg-brand-navy text-white rounded px-2 py-0.5">
-                                {{ $match->category->name }}
+                                {{ $match->category?->name ?? '—' }}
                             </span>
                             <span class="text-sm font-semibold text-brand-navy shrink-0">
                                 {{ $match->scheduled_at->translatedFormat('d/m \à\s H:i') }}
                             </span>
                         </div>
                         <p class="font-medium truncate">vs {{ $opponent?->name ?? 'A definir' }}</p>
-                        <p class="text-sm text-slate-600">{{ $match->court->name }}</p>
+                        <p class="text-sm text-slate-600">{{ $match->court?->name ?? 'Quadra a definir' }}</p>
                     </div>
                 @endforeach
             </div>
