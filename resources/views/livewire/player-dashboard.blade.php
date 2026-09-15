@@ -1,7 +1,7 @@
 <div class="space-y-8">
     <div>
         <h1 class="text-2xl font-bold text-brand-navy">Olá, {{ $player->name }}</h1>
-        <p class="text-slate-600 text-sm">Aqui você marca o horário dos seus jogos pendentes e acompanha os já agendados.</p>
+        <p class="text-slate-600 text-sm">Aqui você marca jogos com outros jogadores, agenda os pendentes e acompanha os já marcados.</p>
     </div>
 
     @if ($successMessage)
@@ -9,6 +9,111 @@
             {{ $successMessage }}
         </div>
     @endif
+
+    <section>
+        <div class="flex items-center justify-between gap-2 mb-3">
+            <h2 class="text-lg font-semibold">Marcar um novo jogo</h2>
+            @if (! $creatingMatch)
+                <button
+                    wire:click="openNewMatchForm"
+                    class="rounded bg-brand-orange hover:bg-brand-orange-dark text-white text-sm font-semibold px-3 py-1.5"
+                >
+                    Marcar novo jogo
+                </button>
+            @endif
+        </div>
+
+        @if ($creatingMatch)
+            <div class="bg-white rounded-lg shadow p-4 space-y-4">
+                <div class="flex items-center justify-between gap-2">
+                    <p class="text-sm text-slate-600">Jogador 1: <span class="font-semibold text-brand-navy">{{ $player->name }}</span></p>
+                    <button wire:click="closeNewMatchForm" class="text-sm text-slate-500 hover:underline">Cancelar</button>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Categoria</label>
+                    <select wire:model.live="newCategoryId" class="w-full rounded border-slate-300 focus:border-brand-orange focus:ring-brand-orange">
+                        <option value="">Selecione</option>
+                        @foreach ($this->myCategories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                @if ($newCategoryId)
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Jogador 2 (adversário)</label>
+                        <select wire:model.live="newOpponentId" class="w-full rounded border-slate-300 focus:border-brand-orange focus:ring-brand-orange">
+                            <option value="">Selecione</option>
+                            @foreach ($this->opponentOptions as $opponent)
+                                <option value="{{ $opponent->id }}">{{ $opponent->name }}</option>
+                            @endforeach
+                        </select>
+                        @if ($this->opponentOptions->isEmpty())
+                            <p class="text-sm text-slate-500 mt-1">Nenhum outro jogador cadastrado nessa categoria ainda.</p>
+                        @endif
+                    </div>
+                @endif
+
+                @if ($newCategoryId && $newOpponentId)
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Quadra</label>
+                        <select wire:model.live="newCourtId" class="w-full rounded border-slate-300 focus:border-brand-orange focus:ring-brand-orange">
+                            <option value="">Selecione</option>
+                            @foreach ($this->courts as $court)
+                                <option value="{{ $court->id }}">{{ $court->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Data</label>
+                        <div class="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0">
+                            @foreach ($this->dateOptions as $option)
+                                <button
+                                    type="button"
+                                    wire:click="selectNewDate('{{ $option['value'] }}')"
+                                    class="flex flex-col items-center justify-center shrink-0 w-14 h-16 rounded-lg border text-xs font-semibold transition-colors
+                                        {{ $newDate === $option['value']
+                                            ? 'bg-brand-orange border-brand-orange text-white'
+                                            : 'border-slate-300 text-slate-700 active:border-brand-orange' }}"
+                                >
+                                    <span class="uppercase">{{ $option['weekday'] }}</span>
+                                    <span class="text-base leading-tight">{{ $option['day'] }}</span>
+                                    <span class="uppercase">{{ $option['month'] }}</span>
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    @error('newMatch')
+                        <p class="text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+
+                    @if ($newCourtId && $newDate)
+                        <div>
+                            <p class="text-sm font-medium mb-2">Horários disponíveis</p>
+
+                            @if (empty($newAvailableSlots))
+                                <p class="text-sm text-slate-500">Nenhum horário livre nessa quadra/data. Tente outra data ou quadra.</p>
+                            @else
+                                <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                                    @foreach ($newAvailableSlots as $slot)
+                                        <button
+                                            wire:click="confirmNewMatchSlot('{{ $slot }}')"
+                                            class="rounded border border-brand-green text-brand-green active:bg-brand-green/10 text-sm font-semibold py-2"
+                                        >
+                                            {{ \Illuminate\Support\Carbon::parse($slot)->format('H:i') }}
+                                        </button>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+                @endif
+            </div>
+        @endif
+    </section>
 
     <section>
         <h2 class="text-lg font-semibold mb-3">Jogos pendentes de marcação</h2>
