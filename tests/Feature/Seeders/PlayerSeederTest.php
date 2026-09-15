@@ -28,3 +28,19 @@ test('running the seeder twice does not duplicate players or category attachment
 
     expect($sabino->categories()->count())->toBe(1);
 });
+
+test('seeds the known phone numbers', function () {
+    $this->seed(PlayerSeeder::class);
+
+    expect(Player::where('name', 'Matheus Aguiar')->firstOrFail()->phone)->toBe('24999919204')
+        ->and(Player::where('name', 'Raphael')->firstOrFail()->phone)->toBe('24988052308')
+        ->and(Player::where('name', 'Eduardo Villares')->firstOrFail()->phone)->toBe('24992632440');
+});
+
+test('seeding a phone never overwrites one already set', function () {
+    $matheus = Player::factory()->create(['name' => 'Matheus Aguiar', 'phone' => '11911112222']);
+
+    $this->seed(PlayerSeeder::class);
+
+    expect($matheus->fresh()->phone)->toBe('11911112222');
+});

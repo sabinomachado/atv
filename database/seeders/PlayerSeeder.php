@@ -34,6 +34,16 @@ class PlayerSeeder extends Seeder
     ];
 
     /**
+     * Known phone numbers, keyed by the exact name above ("Raphinha" is
+     * Raphael's nickname — the bracket lists him as "Raphael").
+     */
+    private const PHONES = [
+        'Matheus Aguiar' => '24 99991-9204',
+        'Raphael' => '24 98805-2308',
+        'Eduardo Villares' => '24 99263-2440',
+    ];
+
+    /**
      * Run the database seeds.
      */
     public function run(): void
@@ -43,6 +53,10 @@ class PlayerSeeder extends Seeder
         foreach (self::CATEGORY_B_PLAYERS as $name) {
             $player = Player::firstOrCreate(['name' => $name]);
             $player->categories()->syncWithoutDetaching([$categoryB->id]);
+
+            if (isset(self::PHONES[$name]) && blank($player->phone)) {
+                $player->update(['phone' => self::PHONES[$name]]);
+            }
         }
     }
 }
